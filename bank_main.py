@@ -10,3 +10,7 @@ if __name__ == "__main__":
             3. 종료
 
         ''')
+
+        choice = validate_input()
+
+        
