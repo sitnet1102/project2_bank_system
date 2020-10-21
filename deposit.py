@@ -1,9 +1,3 @@
-class Deposit :
-
-    def run(self) :
-        print("deposit.run\n")
-        
-'''
 class Deposit:
     
     def view_deposit_main():
@@ -114,5 +108,3 @@ class Deposit:
                 print("잘못 입력하셨습니다 Y혹은 N을 입력해주세요")
                 continue
         
-'''
-
