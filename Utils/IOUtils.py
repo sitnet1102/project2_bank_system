@@ -18,6 +18,7 @@ class FileReader(IOBase):
 
         with open(file_path, encoding='utf-8') as f:
             users = json.load(f) # users.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+        return users
 
 
     @classmethod
@@ -26,6 +27,8 @@ class FileReader(IOBase):
 
         with open(file_path, encoding='utf-8') as f:
             accounts = json.load(f) # accounts.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+
+        return accounts
             
 
     @classmethod
@@ -34,6 +37,8 @@ class FileReader(IOBase):
 
         with open(file_path, encoding='utf-8') as f:
             history = json.load(f) # history.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+
+        return history
 
 
 class FileWriter(IOBase):
