@@ -1,7 +1,7 @@
 class User:
     """ 현재 시스템 사용자 객체 """
 
-    def __init__(self,**kwargs):
+    def __init__(self, kwargs):
         '''사용자 정보를 딕셔너리 자료구조 kwargs로 받아 User 인스턴스 초기화'''
 
         self.__id = kwargs['id']
@@ -20,6 +20,10 @@ class User:
     @property
     def id(self):
         return self.__id
+
+    @property
+    def name(self):
+        return self.__name
 
     @property
     def admin(self):

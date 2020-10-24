@@ -1,5 +1,6 @@
 from KeyInUtils import KeyIn as keyin
 from IOUtils import FileReader as reader
+from IOUtils import FileWriter as writer
 
 
 class ViewBase :
@@ -37,16 +38,50 @@ class AdminView(ViewBase):
         return keyin_choice
 
     @classmethod
-    def user_data(cls, user):
+    def show_user_datas(cls):
         super().describe_current_stage('사용자 정보 조회')
 
-        # TODO 전체 사용자 정보 출력
+        users = reader.read_all_users()
+        all_deposits = reader.read_all_accounts(account_type = 'Deposits')
+        all_savings = reader.read_all_accounts()
+
+        for info in users.values():
+            deposits, savings = [], []
+            # 적금, 예금 분리
+            for account_num in info['accounts']:
+                if int(account_num[0]) < 5: # 예금
+                    deposits.append(account_num)
+                else: # 적금
+                    savings.append(account_num)
+
+            # 출력
+            print(f"{info['name']} / {info['sign_up_date']}", end=' / ')
+
+            for deposit in deposits:
+                balance = all_deposits[deposit]['balance']
+                print(f"{deposit} / {balance}", end=' / ')
+            for saving in savings:
+                balance = all_savings[saving]['balance']
+                print(f"{saving} / {balance}", end=' / ')
+
+            print()
+        print(f"총 {len(users)} 명 입니다.")
+
 
     @classmethod
-    def transaction_data(cls):
+    def show_transaction_datas(cls):
         super().describe_current_stage('전체 내역 조회')
         
-        # TODO 거래 내역 출력
+        transactions = reader.read_all_transactions()
+        transactions_without_redundancy = []
+        for one_account_history in transactions.values():
+            for history in one_account_history:
+                stamp = history['date']+history['time'] # exclude redundancy
+                if stamp not in transactions_without_redundancy:
+                    transactions_without_redundancy.append(stamp)
+                    print(f"{history['from']} / {history['to']} / {history['date']} / {history['time']} / {history['amount']}")
+
+        print(f"총 {len(transactions_without_redundancy)} 건 입니다.")
 
 class SavingView(ViewBase):
     '''적금 화면요소를 정의합니다'''
@@ -66,21 +101,35 @@ class SavingView(ViewBase):
     @classmethod
     def show_saving_balance(cls, user):
         super().describe_current_stage('적금 조회')
-        # TODO 잔액, 만기일 가져오기 IOutils
-        balance = 10
-        due_date = 10
-        print(f'잔액은 {balance}원 입니다.')
-        print(f'만기일은 {due_date} 입니다.')
+
+        savings = reader.read_all_accounts()
+        for user_saving in user.savings:
+            balance = savings[user_saving]['balance']
+            due_date = savings[user_saving]['expiration_date']
+            print(f'잔액은 {balance}원 입니다.')
+            print(f'만기일은 {due_date} 입니다.')
+
+    @classmethod
+    def __show_saving_history_result(cls, user, start_date, end_date):
+        super().Ais(user.name+'님의 내역')
+
+        transactions = reader.read_all_transactions()
+        if user.savings in transactions.keys():
+            for history in transactions[user.savings]:
+                if int(history['date']) > int(start_date) and int(history['date']) < int(end_date):
+                    print(f"{history['from']} / {history['to']} / {history['date']} / {history['time']} / {history['amount']}")
+            super().Ais('마지막 페이지')
+        else:
+            print('내역이 없습니다.')
 
 
-    def show_saving_history_result(user):
-        super().Ais(user.__name+'님의 내역')
-        # TODO 내역 출력
-
-    def show_saving_history_sub(user):
+    @classmethod
+    def __show_saving_history_sub(cls, user, start_date):
         # TODO 올바른 날짜 keyin utils
+        end_date = '20201231'
+
         if True:
-            show_saving_history_result(user)
+            cls.__show_saving_history_result(user, start_date, end_date)
         else:
             print('''올바르지 않은 날짜 입력입니다.
             아무키나 입력하세요.''')
@@ -92,24 +141,35 @@ class SavingView(ViewBase):
         super().request_keyin('시작 날짜')
 
         # TODO 올바른 날짜 kyein utils
+        start_date = '20000101'
+
         if True:
             super().request_keyin('종료 날짜')
-            show_saving_history_sub(user)
+            cls.__show_saving_history_sub(user, start_date)
         else:
             print('''올바르지 않은 날짜 입력입니다.
             아무키나 입력하세요.''')
             input()
 
-    def put_money_in_saving_result(user, amount):
+    def __put_money_in_saving_result(user, amount):
         print(f'{amount} 이 입금되었습니다.')
-        # TODO 입금 완료 + 현재 잔액 출력
+
+        # 적금 계좌 갱신
+        writer.put_money(user.savings, amount)
+        accounts = reader.read_all_accounts()
+        balance = accounts[user.savings]['balance']
+        print(f"잔액은 {balance}원 입니다.")
+
+        # 거래 내역 저장
+        writer.make_history(user.savings, user.savings, amount)
 
 
-    def put_money_in_saving_sub(user):
+    @classmethod
+    def __put_money_in_saving_sub(cls, user):
         # TODO 올바른 금액 입력 keyin utils
-        money_amount = keyin
+        money_amount = 1000
         if money_amount:
-            put_money_in_saving_result(user, money_amount)
+            cls.__put_money_in_saving_result(user, money_amount)
         else:
             print('''금액이 올바르지 않습니다.
             아무키나 입력하세요.''')
@@ -119,28 +179,28 @@ class SavingView(ViewBase):
     def put_money_in_saving(cls, user):
         super().confirm_check('입금')
 
-        keyin_result = keyin.yes_or_no()
+        # TODO keyin_result = keyin.yes_or_no()
+        keyin_result = 'y'
         if keyin_result == 'y':
             super().request_keyin('금액')
-            put_money_in_saving_sub(user)
+            cls.__put_money_in_saving_sub(user)
         else:
             print('아무키나 입력하세요')
             input()
 
-    def cancel_saving_result(user):
+    def __cancel_saving_result(user):
         print('해약이 완료되었습니다.')
-        # TODO 해약 결과 IOUtils
+        writer.cancel_saving(user.id, user.savings)
+        print(reader.read_all_users())
 
     @classmethod
     def cancel_saving(cls, user):
         super().confirm_check('해약')
 
-        keyin_result = keyin.yes_or_no()
+        # TODO keyin_result = keyin.yes_or_no()
+        keyin_result = 'y'
         if keyin_result == 'y':
-            cancel_saving_result(user)
+            cls.__cancel_saving_result(user)
         else:
             print('''해약이 완료되지 않았습니다.
             메뉴로 돌아갑니다.''')
-
-
-
