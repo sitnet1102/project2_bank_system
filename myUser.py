@@ -6,7 +6,7 @@ class User:
 
         self.__id = kwargs['id']
         self.__name = kwargs['name']
-
+        self.__date = kwargs['sign_up_date']
         # admin, general user
         if kwargs['user_class'] == 0 :# 0:admin, 1:general_user
             self.__admin = True
@@ -24,6 +24,11 @@ class User:
     @property
     def name(self):
         return self.__name
+
+    @property
+    def date(self):
+        return self.__date
+
 
     @property
     def admin(self):

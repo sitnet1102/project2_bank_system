@@ -1,7 +1,7 @@
 {
     "12341231234567" : {
         "name" : "김건국",
-        "pw" : "Password!",
+        "pw" : "Password1!",
         "sign_up_date" : "20200930",
         "accounts" : [
             "12341231234567",
@@ -10,13 +10,13 @@
     },
     "00000000000000" : {
         "name" : "관리자",
-        "pw" : "admin",
+        "pw" : "Admin123***",
         "sign_up_date" : "20201021",
         "accounts" : []
     },
     "34563451234567" : {
         "name" : "박상허",
-        "pw" : "Konkuk@",
+        "pw" : "Konkuk123@",
         "sign_up_date" : "20130313",
         "accounts" : [
             "67867891234567",

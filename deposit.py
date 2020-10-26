@@ -15,6 +15,7 @@ class Deposit:
             transfer_money()
         elif main_input == 6:
             #뒤로가기 - 로그인메인
+            pass
         else:
             view_deposit_main()
         

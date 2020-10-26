@@ -1,4 +1,4 @@
-from View import SavingView as sv
+from Utils.View import SavingView as sv
 
 class Saving:
     """ 적금 서비스의 동작을 정의합니다 """

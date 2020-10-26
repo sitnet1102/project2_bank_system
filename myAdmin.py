@@ -1,4 +1,4 @@
-from View import AdminView as av
+from Utils.View import AdminView as av
 
 
 class Admin:
