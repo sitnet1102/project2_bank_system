@@ -300,3 +300,7 @@ class BankMainView(ViewBase):
     @classmethod
     def password_input(cls) :
         print("비밀번호를 입력하세요.\n")
+
+    @classmethod
+    def wrong_data(cls) :
+        print("잘못된 계좌번호나 비밀번호 입니다.\n")
