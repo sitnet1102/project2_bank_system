@@ -1,7 +1,7 @@
-# import deposit
-import depositTest as deposit
-# import mySaving as savings
-import savingsTest as savings
+import deposit
+#import depositTest as deposit
+import mySaving as savings
+#import savingsTest as savings
 from Utils.View import BankMainView as bmv
 import myAdmin # as admin
 import newAccount as New_account
