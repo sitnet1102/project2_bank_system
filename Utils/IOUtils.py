@@ -4,12 +4,12 @@ from datetime import datetime
 
 class IOBase : 
     Base_dir = os.path.join(os.path.dirname(os.path.abspath(os.path.dirname(__file__))),'data')
-    user_file = r'test_users.json'
-    # user_file = r'users.json'
-    accounts_file = r'test_accounts.json'
-    # accounts_file = r'accounts.json'
-    history_file = r'test_history.json'
-    # history_file = r'history.json'
+    # user_file = r'test_users.json'
+    user_file = r'users.json'
+    # accounts_file = r'test_accounts.json'
+    accounts_file = r'accounts.json'
+    # history_file = r'test_history.json'
+    history_file = r'history.json'
 
 class FileReader(IOBase):
     
@@ -40,6 +40,19 @@ class FileReader(IOBase):
             history = json.load(f) # history.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
 
         return history
+    
+    @classmethod
+    def read_one_users(cls, account):
+        file_path = os.path.join(cls.Base_dir, cls.user_file)
+
+        with open(file_path, encoding='utf-8') as f:
+            users = json.load(f) # users.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+        try :
+            result = users[account]
+        except KeyError :
+            result = False
+
+        return result
 
 
 class FileWriter(IOBase):
@@ -108,3 +121,7 @@ class FileWriter(IOBase):
 
         with open(file_path, mode='w', encoding='utf-8') as f:
             json.dump(history, f)
+
+    @classmethod
+    def make_user(cls) :
+        pass

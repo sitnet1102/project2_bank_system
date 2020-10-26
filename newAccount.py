@@ -80,6 +80,8 @@ class New_account :
 
     def give_account(self) :
         # 계좌번호 생성기  
+        # user.json에서 키값으로 확인하고 없는것 체크
+        # random 
         tmp = "12341231234567"
         return tmp
 

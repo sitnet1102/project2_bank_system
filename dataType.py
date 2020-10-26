@@ -14,7 +14,7 @@ class dataTypeBase :
     def dataToBasicType(self, data) :
         #기본형 변환 메소드
         #if self.dataConfirm(data) :
-        return data.strip() # 양쪽 공백 지우기
+        return data.strip(' ') # 양쪽 공백 지우기
 
     def dataCompare(self, A, B) :
         A = self.dataToBasicType(A)
