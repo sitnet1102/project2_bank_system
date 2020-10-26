@@ -1,6 +1,6 @@
-from KeyInUtils import KeyIn as keyin
-from IOUtils import FileReader as reader
-from IOUtils import FileWriter as writer
+from Utils.KeyInUtils import KeyIn as keyin
+from Utils.IOUtils import FileReader as reader
+from Utils.IOUtils import FileWriter as writer
 
 
 class ViewBase :
@@ -151,7 +151,7 @@ class SavingView(ViewBase):
             아무키나 입력하세요.''')
             input()
 
-    def __put_money_in_saving_result(user, amount):
+    def __put_money_in_saving_result(self, user, amount):
         print(f'{amount} 이 입금되었습니다.')
 
         # 적금 계좌 갱신
@@ -188,7 +188,7 @@ class SavingView(ViewBase):
             print('아무키나 입력하세요')
             input()
 
-    def __cancel_saving_result(user):
+    def __cancel_saving_result(self, user):
         print('해약이 완료되었습니다.')
         writer.cancel_saving(user.id, user.savings)
         print(reader.read_all_users())
@@ -204,3 +204,99 @@ class SavingView(ViewBase):
         else:
             print('''해약이 완료되지 않았습니다.
             메뉴로 돌아갑니다.''')
+
+class NewAccountView(ViewBase):
+    ''' 회원가입 화면요소를 정의합니다'''
+
+    @classmethod
+    def entry_confirm(cls) :
+        print("신규 가입을 진행하시겠습니까?(Y/N)\n")
+
+    @classmethod
+    def name_confirm(cls) :
+        print("신규 회원 등록입니다.\n")
+        print("이름을 입력하세요.\n")
+
+    @classmethod
+    def password_confirm(cls) :
+        print("비밀번호를 입력하세요. (비밀번호는 1 2.....)\n")
+        ## 비밀번호 형식에 대해서 설명 해줄건지???
+
+    @classmethod
+    def wrong_name(cls) : 
+        print("잘못된 이름입니다.\n")
+
+    @classmethod
+    def wrong_password(cls) :
+        print("잘못된 비밀번호 입니다.\n")
+
+    @classmethod
+    def press_anykey(cls) :
+        print("아무키나 누르세요\n")
+
+    @classmethod
+    def info_confirm(cls, name, date, password) :
+        print("회원 정보는 다음과 같습니다.\n"
+            + "이름 : " + name 
+            + "\n가입일 : " + date
+            + "\n비밀번호 : " + password
+            + "\n입력하신 정보가 맞다면 Y, 일치하지 않는다면 N\n")
+
+    @classmethod
+    def cancel(cls) :
+        print("가입이 취소되었습니다.\n")
+    
+    @classmethod
+    def join(cls, name, account) :
+        print("가입이 완료되었습니다.\n"
+            + name + " 님의 계좌번호는 " + account + " 입니다.\n")
+
+class LoginMainView(ViewBase):
+    ''' 로그인 화면요소를 정의합니다'''
+    @classmethod
+    def login_main(cls, name) :
+        print("         " + name + 
+            
+            " 님 안녕하세요.\n" +
+            '''
+             1. 예금 조회\n
+             2. 적금 조회\n
+             3. 내 정보 조회\n
+             4. 로그 아웃\n
+        ''')
+
+    @classmethod
+    def my_info(cls, name, date, account, savings_account) :
+        print(name + " 님의 정보입니다.\n"
+            + "이름 : " + name 
+            + "\n가입일 : " + date
+            + "\n예금 계좌번호 : " + account
+            + "\n적금 계좌번호 : " + savings_account
+            + "\n"
+        )
+    @classmethod
+    def logout(cls) :
+        print("로그아웃\n")
+    @classmethod
+    def press_anykey(cls) :
+        print("아무키나 누르세요\n")
+    
+class BankMainView(ViewBase):
+    ''' 주 프롬프트 화면요소를 정의합니다'''
+    @classmethod
+    def bank_main(cls) :
+        print('''
+            은행 전산 시스템 입니다.\n
+            1. 로그인\n
+            2. 신규가입\n
+            3. 종료\n
+        ''')
+    @classmethod
+    def exit(cls) :
+        print("시스템을 종료합니다.\n")
+    @classmethod
+    def account_input(cls) :
+        print("계좌번호를 입력하세요.\n")
+    @classmethod
+    def password_input(cls) :
+        print("비밀번호를 입력하세요.\n")
