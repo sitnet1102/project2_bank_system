@@ -151,7 +151,7 @@ class SavingView(ViewBase):
             아무키나 입력하세요.''')
             input()
 
-    def __put_money_in_saving_result(self, user, amount):
+    def __put_money_in_saving_result(user, amount):
         print(f'{amount} 이 입금되었습니다.')
 
         # 적금 계좌 갱신
@@ -188,7 +188,7 @@ class SavingView(ViewBase):
             print('아무키나 입력하세요')
             input()
 
-    def __cancel_saving_result(self, user):
+    def __cancel_saving_result(user):
         print('해약이 완료되었습니다.')
         writer.cancel_saving(user.id, user.savings)
         print(reader.read_all_users())
