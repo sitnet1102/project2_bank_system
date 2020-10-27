@@ -23,6 +23,21 @@ class KeyIn :
         return sub
 
     @classmethod
+    def make_eight_digit_date(cls, stripped_string):
+        if len(stripped_string) == 6:
+            # under 40
+            if int(stripped_string[0:2]) < 40:
+                stripped_string = '20'+stripped_string
+            # over 50
+            elif int(stripped_string[0:2]) > 50:
+                stripped_string = '19'+stripped_string
+            # else
+            else:
+                stripped_string = '19'+stripped_string
+
+        return stripped_string
+
+    @classmethod
     def has_only(cls, type_in, config):
         if config == 'integer':
             pattern = '[\D]'# 숫자가 아닌 모든것
@@ -55,6 +70,9 @@ class KeyIn :
 
         if len(type_in) == 8:
             if int(type_in[4:6]) > 12 or int(type_in[6:8]) > 31:
+                return False
+            if int(type_in[:4]) < 1900:
+                # 자리 입력시 연도 제한
                 return False
         
         # TODO 월에 맞은 일이 있는경우. 윤년...
@@ -140,31 +158,37 @@ class KeyIn :
     @classmethod
     def type_in_amount(cls):
 
-        while True:
-            stripped_string = input()
+        stripped_string = input()
 
-            if cls.is_amount(stripped_string):
-                return int(stripped_string)
-            else:
-                print('잘못된 입력입니다.(0 이상의 양의 정수만 입력)')
+        if cls.is_amount(stripped_string):
+            return int(stripped_string)
+        else:
+            return False
 
     @classmethod
     def type_in_date(cls):
 
-        while True:
-            keyin = input()
-            stripped_string = cls.remove_puctuation(keyin,config='date')
+        keyin = input()
+        stripped_string = cls.remove_puctuation(keyin,config='date')
 
-            if cls.is_date(stripped_string):
-                return stripped_string
-            else:
-                print('잘못된 입력입니다.(허용된 날짜 형식만 입력)')
+        # 허용된 키보드 입력만 8자리로 출력한다.
+        if cls.is_date(stripped_string):
+            stripped_string = cls.make_eight_digit_date(stripped_string)
+            return stripped_string
+        else:
+            return False
 
 
 # type_in_menu
 # type_in_yes_or_no
 # type_in_amount
 # type_in_date
-# result = KeyIn.type_in_amount()
-# print(type(result))
-# print('result : ',result)
+# while True:
+#     result = KeyIn.type_in_amount()
+#     if result:
+#         print('정확한 입력')
+#         print(type(result))
+#         print('result : ',result)
+#     else:
+#         print('부정확한입력')
+#         print('False를 출력한다')

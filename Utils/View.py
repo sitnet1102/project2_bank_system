@@ -126,9 +126,14 @@ class SavingView(ViewBase):
     def __show_saving_history_sub(cls, user, start_date):
 
         end_date = keyin.type_in_date()
-        # TODO 종료일 > 시작일
-        if True:
-            cls.__show_saving_history_result(user, start_date, end_date)
+        
+        if end_date:
+            if int(end_date) >= int(start_date):
+                cls.__show_saving_history_result(user, start_date, end_date)
+            else:
+                print('''시작 시점이 종료 시점보다 늦습니다.
+                아무키나 입력하세요.''')
+                input()
         else:
             print('''올바르지 않은 날짜 입력입니다.
             아무키나 입력하세요.''')
@@ -141,8 +146,8 @@ class SavingView(ViewBase):
 
 
         start_date = keyin.type_in_date()
-        # TODO 올바른 시작일
-        if True:
+        
+        if start_date:
             super().request_keyin('종료 날짜')
             cls.__show_saving_history_sub(user, start_date)
         else:
