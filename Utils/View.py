@@ -33,8 +33,7 @@ class AdminView(ViewBase):
         print('2. 전체 내역조회')
         print('3. 로그 아웃')
 
-        # TODO keyin_choice() 받기
-        keyin_choice = 1
+        keyin_choice = keyin.type_in_menu(view_class = 'Admin')
         return keyin_choice
 
     @classmethod
@@ -93,9 +92,9 @@ class SavingView(ViewBase):
         print('3. 입금')
         print('4. 해약')
         print('5. 뒤로가기')
-        # TODO 메뉴 선택 결과 받기
-        keyin_choice = 1
-        return keyin_choice
+
+        keyin_choice = keyin.type_in_menu(view_class = 'Saving')
+        return int(keyin_choice)
 
 
     @classmethod
@@ -125,9 +124,9 @@ class SavingView(ViewBase):
 
     @classmethod
     def __show_saving_history_sub(cls, user, start_date):
-        # TODO 올바른 날짜 keyin utils
-        end_date = '20201231'
 
+        end_date = keyin.type_in_date()
+        # TODO 종료일 > 시작일
         if True:
             cls.__show_saving_history_result(user, start_date, end_date)
         else:
@@ -140,9 +139,9 @@ class SavingView(ViewBase):
         super().describe_current_stage('내역 조회')
         super().request_keyin('시작 날짜')
 
-        # TODO 올바른 날짜 kyein utils
-        start_date = '20000101'
 
+        start_date = keyin.type_in_date()
+        # TODO 올바른 시작일
         if True:
             super().request_keyin('종료 날짜')
             cls.__show_saving_history_sub(user, start_date)
@@ -166,8 +165,8 @@ class SavingView(ViewBase):
 
     @classmethod
     def __put_money_in_saving_sub(cls, user):
-        # TODO 올바른 금액 입력 keyin utils
-        money_amount = 1000
+
+        money_amount = keyin.type_in_amount()
         if money_amount:
             cls.__put_money_in_saving_result(user, money_amount)
         else:
@@ -179,9 +178,8 @@ class SavingView(ViewBase):
     def put_money_in_saving(cls, user):
         super().confirm_check('입금')
 
-        # TODO keyin_result = keyin.yes_or_no()
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or 'yes':
             super().request_keyin('금액')
             cls.__put_money_in_saving_sub(user)
         else:
@@ -197,9 +195,8 @@ class SavingView(ViewBase):
     def cancel_saving(cls, user):
         super().confirm_check('해약')
 
-        # TODO keyin_result = keyin.yes_or_no()
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or 'yes':
             cls.__cancel_saving_result(user)
         else:
             print('''해약이 완료되지 않았습니다.
