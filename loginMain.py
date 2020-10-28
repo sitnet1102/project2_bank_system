@@ -1,5 +1,5 @@
 from Utils.View import LoginMainView as lmv
-import deposit
+import myDeposit as deposit
 # import depositTest as deposit
 import mySaving as savings
 # import savingsTest as savings
@@ -12,7 +12,9 @@ class Login_main :
         d = deposit.Deposit(user)
         s = savings.Saving(user)
         while True :
+
             lmv.login_main(user.name)
+
             choice = input()
             if choice == '1' :
                 d.run()
