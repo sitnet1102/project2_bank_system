@@ -53,29 +53,63 @@ class KeyIn :
         return True
 
     @classmethod
+    def is_leap_year(cls, year):
+        if year%4 == 0 and year%100 == 0 and year%400 == 0:
+            return True 
+        if year%4 == 0 and year%100 == 0:
+            return False # 평년
+        if year%4 == 0:
+            return True
+
+        return False # 평년
+
+    @classmethod
     def is_date(cls, type_in):
+        thirty = {4,6,9,11}
 
         # 비정상
         # 허용된 특수문자만 제거했으므로, 모두 숫자가 아니면
         p = re.compile('[a-zA-Z]+')
         if p.search(type_in) is not None:
             return False
+        
         # 6자리거나 8자리가 아니면
         if len(type_in) != 6 and len(type_in) != 8:
             return False
-        # 6자리일때 2,3번째가 13이상일 경우, 8자리일때 4,5번째가 13이상일 경우
-        if len(type_in) == 6:
-            if int(type_in[2:4]) > 12 or int(type_in[4:6]) > 31:
+
+        # 8자리로 세팅
+        mydate = cls.make_eight_digit_date(type_in)
+        year = int(mydate[:4])
+        month = int(mydate[4:6])
+        day = int(mydate[6:])
+
+        if month == 0 or day == 0:
+            # 0월 0일
+            return False
+        if month > 12 or day > 31:
+            # 13월 40일
+            return False
+        if year < 1900:
+            # 자리 입력시 연도 제한
+            return False
+        
+        # 월에 맞는 일인지
+        if month in thirty:
+            # 30일 월인데 31일로 입력한 경우
+            if day == 31:
                 return False
 
-        if len(type_in) == 8:
-            if int(type_in[4:6]) > 12 or int(type_in[6:8]) > 31:
-                return False
-            if int(type_in[:4]) < 1900:
-                # 자리 입력시 연도 제한
-                return False
-        
-        # TODO 월에 맞은 일이 있는경우. 윤년...
+        # 윤년 체크
+        if month == 4 :
+            # 4월
+            if cls.is_leap_year(year):
+                # 윤년인데 28일로 입력한 경우
+                if day == 28:
+                    return False
+            else :
+                # 윤년 아닌데 29일로 입력한 경우
+                if day == 29:
+                    return False
 
         # 정상
         return True
@@ -174,10 +208,9 @@ class KeyIn :
         keyin = input()
         stripped_string = cls.remove_puctuation(keyin,config='date')
 
-        # 허용된 키보드 입력만 8자리로 출력한다.
         if cls.is_date(stripped_string):
-            stripped_string = cls.make_eight_digit_date(stripped_string)
-            return stripped_string
+            # 허용된 키보드 입력만 8자리로 출력한다.
+            return cls.make_eight_digit_date(stripped_string)
         else:
             return False
 
@@ -187,7 +220,7 @@ class KeyIn :
 # type_in_amount
 # type_in_date
 # while True:
-#     result = KeyIn.type_in_menu()
+#     result = KeyIn.type_in_date()
 #     if result:
 #         print('정확한 입력')
 #         print(type(result))
