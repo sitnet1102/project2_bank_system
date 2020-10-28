@@ -231,6 +231,9 @@ class NewAccountView(ViewBase):
     @classmethod
     def wrong_password(cls) :
         print("잘못된 비밀번호 입니다.\n")
+        print("비밀번호는 숫자, 영어 소문자, 영어 대문자, \n")
+        print("특수문자( !@#$%^&*() )중 하나씩을 반드시 포함하며\n")
+        print("10자 이상 20자 이하이어야 합니다.\n")
 
     @classmethod
     def press_anykey(cls) :

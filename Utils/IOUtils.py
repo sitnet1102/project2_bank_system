@@ -54,6 +54,20 @@ class FileReader(IOBase):
 
         return result
 
+    @classmethod
+    def new_account_check(cls, account):
+        file_path = os.path.join(cls.Base_dir, cls.user_file)
+        result = False
+        with open(file_path, encoding='utf-8') as f:
+            users = json.load(f) # users.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+        try :
+            if users[account] == account :
+                result = True
+        except KeyError :
+            result = False
+
+        return result
+
 
 class FileWriter(IOBase):
 
@@ -123,5 +137,62 @@ class FileWriter(IOBase):
             json.dump(history, f)
 
     @classmethod
-    def make_user(cls) :
-        pass
+    def make_user(cls, account, name, pw, date, savingsA):
+        file_path = os.path.join(cls.Base_dir, cls.user_file)
+
+        with open(file_path, encoding='utf-8') as f:
+            user = json.load(f)
+
+        # 유저 정보 
+        userInfo = {
+            "name" : name,
+            "pw" : pw,
+            "sign_up_date" : date,
+            "accounts" : [
+                account,
+                savingsA
+            ]
+        }
+
+        if account not in user.keys():
+            user[account] = []
+        user[account].append(userInfo)
+
+        with open(file_path, mode='w', encoding="utf-8") as f:
+            json.dump(user, f, ensure_ascii = False, indent = "\t")
+    
+    '''
+    @classmethod
+    def make_account(cls, account, date, account_type):
+        file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(file_path, encoding='utf-8') as f:
+            acc = json.load(f)
+
+        balance = 0
+        ex_date = int(date) + 30000 # 3년 추가 
+        #accountInfo = ""
+        # 계좌 정보 
+        if account_type == "Deposits" :
+            accountInfo = {
+                "balance" : balance,
+                "sign_up_date" : date
+            }
+        elif account_type == "Savings" :
+            accountInfo = {
+                "balance" : balance,
+                "sign_up_date" : date,
+                "expiration_date" : ex_date
+            }
+        else : 
+            return False
+
+        if account_type not in acc.keys() :
+            acc[account_type] = []
+        if acc not in acc[account_type].keys():
+            acc[account_type][account] = []
+        acc[account_type][account].append(accountInfo)
+
+        with open(file_path, mode='w', encoding="utf-8") as f:
+            json.dump(user, f, ensure_ascii = False, indent = "\t")
+    '''

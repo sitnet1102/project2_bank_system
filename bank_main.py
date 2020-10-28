@@ -3,6 +3,5 @@ import mainPrompt
 
 if __name__ == "__main__":
     ## try - finally - like this ????
-    tmp = mainPrompt.mainPrompt()
-
+    mainPrompt.mainPrompt()
 
