@@ -30,7 +30,15 @@ class FileReader(IOBase):
             accounts = json.load(f) # accounts.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
 
         return accounts[account_type]
-            
+    
+    @classmethod
+    def read_all_accounts_in_deposit(cls, account_type = 'Deposits'):
+        file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(file_path, encoding='utf-8') as f:
+            accounts = json.load(f) # accounts.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+
+        return accounts[account_type]
 
     @classmethod
     def read_all_transactions(cls):
@@ -92,7 +100,7 @@ class FileWriter(IOBase):
             json.dump(accounts, f)
 
     @classmethod
-    def make_history(cls, sender, receiver, amount, account_type = 'Savings'):
+    def make_history(cls, sender, receiver, amount, account_type):
         file_path = os.path.join(cls.Base_dir, cls.history_file)
 
         now = datetime.now()
@@ -117,7 +125,11 @@ class FileWriter(IOBase):
                 history[sender] = []
             history[sender].append(info)
         # 다른 타입의 계좌인 경우 이곳에 정의
-        # elif
+        # 예금
+        elif account_type == 'Deposits':
+            if sender not in history.keys():
+                history[sender] = []
+            history[sender].append(info)
 
         with open(file_path, mode='w', encoding='utf-8') as f:
             json.dump(history, f)
@@ -125,3 +137,27 @@ class FileWriter(IOBase):
     @classmethod
     def make_user(cls) :
         pass
+
+    @classmethod
+    def withdraw_money(cls, account_num, amount):
+        account_file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(account_file_path, encoding='utf-8') as f:
+            accounts = json.load(f)
+
+        accounts['Deposits'][account_num]['balance'] -= amount
+
+        with open(account_file_path, mode='w',encoding='utf-8') as f:
+            json.dump(accounts, f)
+
+    @classmethod
+    def put_money_in_deposit(cls, account_num, amount):
+        account_file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(account_file_path, encoding='utf-8') as f:
+            accounts = json.load(f)
+
+        accounts['Deposits'][account_num]['balance'] += amount
+
+        with open(account_file_path, mode='w',encoding='utf-8') as f:
+            json.dump(accounts, f)
