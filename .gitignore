@@ -1,3 +1,4 @@
 .vscode
 Utils/__pycache__
 data/test_*.json
+*.pyc
