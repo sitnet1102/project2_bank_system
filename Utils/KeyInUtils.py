@@ -124,6 +124,9 @@ class KeyIn :
         if not cls.has_only(typein, config='integer'):
             # 숫자 이외의 것이 들어있으면
             return False
+
+        if len(typein) == 0:
+            return False
             
         if int(typein) not in menu_set:
             # 허용된 숫자 범위를 벗어나면
@@ -184,7 +187,7 @@ class KeyIn :
 # type_in_amount
 # type_in_date
 # while True:
-#     result = KeyIn.type_in_amount()
+#     result = KeyIn.type_in_menu()
 #     if result:
 #         print('정확한 입력')
 #         print(type(result))

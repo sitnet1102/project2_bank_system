@@ -11,7 +11,7 @@ class ViewBase:
     '''공통된 화면요소를 여기에 정의합니다'''
 
     def confirm_check(step_name):
-        print(f'{step_name}을(를) 진행하시겠습니까?')
+        print(f'{step_name}을(를) 진행하시겠습니까?(Yes or no)')
 
     def describe_current_stage(stage_name):
         print(f'{stage_name} 입니다')
@@ -166,7 +166,7 @@ class DepositView(ViewBase):
             print('아무키나 입력하세요')
             input()
 
-# 이체부분 transaction safety 차치하더라도 로직 손봐야함 불명확
+    # 이체부분 transaction safety 차치하더라도 로직 손봐야함 불명확
     @classmethod
     def __send_money_result(user, amount):
         print(f'{amount}원 이 이체되었습니다.')
@@ -279,11 +279,14 @@ class SavingView(ViewBase):
 
     @classmethod
     def menu(cls):
-        print('1. 적금 조회')
-        print('2. 내역 조회')
-        print('3. 입금')
-        print('4. 해약')
-        print('5. 뒤로가기')
+        print('''
+                < 적금 >
+                1. 적금 조회
+                2. 내역 조회
+                3. 입금
+                4. 해약
+                5. 뒤로가기
+                ''')
 
         keyin_choice = keyin.type_in_menu(view_class = 'Saving')
         return int(keyin_choice)
@@ -293,25 +296,29 @@ class SavingView(ViewBase):
         super().describe_current_stage('적금 조회')
 
         savings = reader.read_all_accounts()
-        for user_saving in user.savings:
-            balance = savings[user_saving]['balance']
-            due_date = savings[user_saving]['expiration_date']
+        if user.savings in savings.keys():
+            balance = savings[user.savings]['balance']
+            due_date = savings[user.savings]['expiration_date']
             print(f'잔액은 {balance}원 입니다.')
-            print(f'만기일은 {due_date} 입니다.')
+            print(f'만기일은 {due_date} 입니다.\n\n')
+        else:
+            print(f'{user.name}님의 적금 계좌가 존재하지 않습니다.')
 
     @classmethod
     def __show_saving_history_result(cls, user, start_date, end_date):
-        super().Ais(user.name+'님의 내역')
+        super().Ais('<'+user.name+'님의 내역>\n')
 
         transactions = reader.read_all_transactions()
         if user.savings in transactions.keys():
             for history in transactions[user.savings]:
                 if int(history['date']) > int(start_date) and int(history['date']) < int(end_date):
                     print(
-                        f"{history['from']} / {history['to']} / {history['date']} / {history['time']} / {history['amount']}")
+                        f"{history['from']} / {history['to']} / {history['date']} / {history['time']} / {history['amount']}\n")
             super().Ais('마지막 페이지')
+            print('아무키나 입력하세요....\n\n')
+            input()
         else:
-            print('내역이 없습니다.')
+            print('내역이 없습니다.\n\n')
 
     @classmethod
     def __show_saving_history_sub(cls, user, start_date):
@@ -322,13 +329,10 @@ class SavingView(ViewBase):
             if int(end_date) >= int(start_date):
                 cls.__show_saving_history_result(user, start_date, end_date)
             else:
-                print('''시작 시점이 종료 시점보다 늦습니다.
-                아무키나 입력하세요.''')
+                print('시작 시점이 종료 시점보다 늦습니다. 아무키나 입력하세요.....\n\n')
                 input()
         else:
-            print('''올바르지 않은 날짜 입력입니다.
-            아무키나 입력하세요.''')
-            input()
+            print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
 
     @classmethod
     def show_saving_history(cls, user):
@@ -342,21 +346,22 @@ class SavingView(ViewBase):
             super().request_keyin('종료 날짜')
             cls.__show_saving_history_sub(user, start_date)
         else:
-            print('''올바르지 않은 날짜 입력입니다.
-            아무키나 입력하세요.''')
-            input()
+            print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
+
 
     def __put_money_in_saving_result(user, amount):
-        print(f'{amount} 이 입금되었습니다.')
+        print(f'{amount}원이 입금되었습니다.')
 
         # 적금 계좌 갱신
         writer.put_money(user.savings, amount)
         accounts = reader.read_all_accounts()
         balance = accounts[user.savings]['balance']
         print(f"잔액은 {balance}원 입니다.")
+        print('아무키나 입력하세요.....\n\n')
+        input()
 
         # 거래 내역 저장
-        writer.make_history(user.savings, user.savings, amount)
+        writer.make_history(user.savings, user.savings, amount, account_type='Savings')
 
     @classmethod
     def __put_money_in_saving_sub(cls, user):
@@ -365,8 +370,7 @@ class SavingView(ViewBase):
         if money_amount:
             cls.__put_money_in_saving_result(user, money_amount)
         else:
-            print('''금액이 올바르지 않습니다.
-            아무키나 입력하세요.''')
+            print('금액이 올바르지 않습니다. 아무키나 입력하세요......\n')
             input()
 
     @classmethod
@@ -374,28 +378,28 @@ class SavingView(ViewBase):
         super().confirm_check('입금')
 
         keyin_result = keyin.type_in_yes_or_no()
-        if keyin_result == 'y' or 'yes':
+        if keyin_result == 'y' or keyin_result == 'yes':
             super().request_keyin('금액')
             cls.__put_money_in_saving_sub(user)
         else:
-            print('아무키나 입력하세요')
-            input()
+            print('아무키나 입력하세요......\n\n')
 
     def __cancel_saving_result(user):
         print('해약이 완료되었습니다.')
         writer.cancel_saving(user.id, user.savings)
-        print(reader.read_all_users())
+        print('아무키나 입력하세요....\n')
+        input()
+
 
     @classmethod
     def cancel_saving(cls, user):
         super().confirm_check('해약')
 
         keyin_result = keyin.type_in_yes_or_no()
-        if keyin_result == 'y' or 'yes':
+        if keyin_result == 'y' or keyin_result == 'yes':
             cls.__cancel_saving_result(user)
         else:
-            print('''해약이 완료되지 않았습니다.
-            메뉴로 돌아갑니다.''')
+            print('해약이 완료되지 않았습니다. 메뉴로 돌아갑니다.\n\n')
 
 
 class NewAccountView(ViewBase):

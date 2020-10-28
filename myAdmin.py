@@ -15,7 +15,7 @@ class Admin:
                 av.show_user_datas()
             elif user_choice == 2:
                 # 거래 내역 조회
-                av.show_transcation_datas()
+                av.show_transaction_datas()
             elif user_choice == 3:
                 # 로그 아웃
                 self.__user_obj = None

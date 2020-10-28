@@ -94,12 +94,12 @@ class FileWriter(IOBase):
         accounts['Savings'].pop(account_num)
 
         with open(account_file_path, mode='w', encoding='utf-8') as f:
-            json.dump(accounts,f)
-
+            json.dump(accounts, f, indent=4, ensure_ascii = False)
+            
         # 2. users에서 적금 삭제
         users[user_id]['accounts'].remove(account_num)
         with open(user_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(users, f)
+            json.dump(users, f, indent=4,ensure_ascii = False)
 
     @classmethod
     def put_money(cls, account_num, amount):
@@ -111,7 +111,7 @@ class FileWriter(IOBase):
         accounts['Savings'][account_num]['balance'] += amount
 
         with open(account_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(accounts, f)
+            json.dump(accounts, f, indent=4, ensure_ascii = False)
 
     @classmethod
     def make_history(cls, sender, receiver, amount, account_type):
@@ -146,7 +146,7 @@ class FileWriter(IOBase):
             history[sender].append(info)
 
         with open(file_path, mode='w', encoding='utf-8') as f:
-            json.dump(history, f)
+            json.dump(history, f, indent=4, ensure_ascii = False)
 
     @classmethod
 
@@ -196,7 +196,7 @@ class FileWriter(IOBase):
         accounts['Deposits'][account_num]['balance'] += amount
 
         with open(account_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(accounts, f)
+            json.dump(accounts, f, indent = "\t")
             
     @classmethod
     def make_account(cls, account, date, account_type):
