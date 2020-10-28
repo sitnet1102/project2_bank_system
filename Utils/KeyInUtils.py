@@ -100,8 +100,8 @@ class KeyIn :
                 return False
 
         # 윤년 체크
-        if month == 4 :
-            # 4월
+        if month == 2 :
+            # 2월
             if cls.is_leap_year(year):
                 # 윤년인데 28일로 입력한 경우
                 if day == 28:
