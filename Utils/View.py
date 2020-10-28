@@ -386,7 +386,7 @@ class SavingView(ViewBase):
 
     def __cancel_saving_result(user):
         print('해약이 완료되었습니다.')
-        writer.cancel_saving(user.id, user.savings)
+        writer.cancel_saving(user, user.savings)
         print('아무키나 입력하세요....\n')
         input()
 
