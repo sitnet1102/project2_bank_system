@@ -1,7 +1,7 @@
-import mainPrompt as mp
 from Utils.KeyInUtils import KeyIn as keyin
 from Utils.IOUtils import FileReader as reader
 from Utils.IOUtils import FileWriter as writer
+from dataType import BankAccountData as bd
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
@@ -66,11 +66,15 @@ class DepositView(ViewBase):
 
     @classmethod
     def __show_deposit_history_sub(cls, user, start_date):
-        # TODO 올바른 날짜 keyin utils
-        end_date = '20201231'
+        end_date = keyin.type_in_date()
 
-        if True:
-            cls.__show_deposit_history_result(user, start_date, end_date)
+        if end_date:
+            if int(end_date) >= int(start_date):
+                cls.__show_deposit_history_result(user, start_date, end_date)
+            else:
+                print('''시작 시점이 종료 시점보다 늦습니다.
+                아무키나 입력하세요.''')
+                input()
         else:
             print('''올바르지 않은 날짜 입력입니다.
             아무키나 입력하세요.''')
@@ -81,10 +85,9 @@ class DepositView(ViewBase):
         super().describe_current_stage('내역 조회')
         super().request_keyin('시작 날짜')
 
-        # TODO 올바른 날짜 kyein utils
-        start_date = '20000101'
+        start_date = keyin.type_in_date()
 
-        if True:
+        if start_date:
             super().request_keyin('종료 날짜')
             cls.__show_deposit_history_sub(user, start_date)
         else:
@@ -107,7 +110,7 @@ class DepositView(ViewBase):
     @classmethod
     def __put_money_in_deposit_sub(cls, user):
         # TODO 올바른 금액 입력 keyin utils
-        money_amount = 1000
+        money_amount = keyin.type_in_amount()
         if money_amount:
             cls.__put_money_in_deposit_result(user, money_amount)
         else:
@@ -120,8 +123,8 @@ class DepositView(ViewBase):
         super().confirm_check('입금')
 
         # TODO keyin_result = keyin.yes_or_no()
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or 'yes':
             super().request_keyin('금액')
             cls.__put_money_in_deposit_sub(user)
         else:
@@ -144,7 +147,7 @@ class DepositView(ViewBase):
     def __withdraw_money_in_deposit_sub(cls, user):
         # TODO 올바른 금액 입력 keyin utils
 
-        money_amount = 10000
+        money_amount = keyin.type_in_amount()
         accounts = reader.read_all_accounts_in_deposit()
         balance = accounts[user.deposits]['balance']
         if money_amount < balance:
@@ -158,8 +161,8 @@ class DepositView(ViewBase):
         super().confirm_check('출금')
 
         # TODO 말해YES OR NO
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or 'yes':
             super().request_keyin('금액')
             cls.__withdraw_money_in_deposit_sub(user)
         else:
@@ -167,7 +170,7 @@ class DepositView(ViewBase):
             input()
 
 # 이체부분 transaction safety 차치하더라도 로직 손봐야함 불명확
-    @classmethod
+
     def __send_money_result(user, amount):
         print(f'{amount}원 이 이체되었습니다.')
 
@@ -183,18 +186,33 @@ class DepositView(ViewBase):
     def __send_money_sub1(cls, user):
         # TODO 금액입력형식 / 계좌번호 입력형식
 
-        money_amount = 100
+        money_amount = keyin.type_in_amount()
         accounts_sender = reader.read_all_accounts_in_deposit()
         balance = accounts_sender[user.deposits]['balance']
         # TODO 계좌번호로 유저찾아서 입금하기
-        another_account = '34563451234567'
-        temp_receiver = reader.read_one_users(another_account)
-        #user_receiver = mp.getData(another_account)
+        super().request_keyin('계좌번호')
+        account_receiver = input()
+        confirm = bd.dataConfirm(account_receiver)
+        #another_account = '34563451234567'
+        if confirm:
+            super().confirm_check('출금')
+            keyin_result = keyin.type_in_yes_or_no()
+            if keyin_result == 'y' or 'yes':
+                pass
+            else:
+                print('취소하였습니다')
+                input()
+        else:
+            print('잘못된 계좌번호입니다.')
+
+        user_receiver = reader.read_one_users(account_receiver)
 
         if money_amount < balance:
             writer.withdraw_money(user.deposits, money_amount)
             writer.put_money_in_deposit(
-                temp_receiver['accounts'][0], money_amount)
+                user_receiver['accounts'][0], money_amount)
+            writer.make_history(
+                user.deposits, user_receiver['accounts'][0], money_amount, 'Deposits')
             cls.__send_money_result(user, money_amount)
         else:
             print('''잔액이 부족합니다 아무키나 입력하세요''')
@@ -204,15 +222,14 @@ class DepositView(ViewBase):
     def send_money(cls, user):
         super().request_keyin('금액')
         cls.__send_money_sub1(user)
-        super().request_keyin('계좌번호')
-
-        # TODO keyin_result inputY/N
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        '''
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or 'yes':
             pass
         else:
             print('아무키나 입력하세요')
             input()
+        '''
 
 
 class AdminView(ViewBase):
@@ -224,7 +241,7 @@ class AdminView(ViewBase):
         print('2. 전체 내역조회')
         print('3. 로그 아웃')
 
-        keyin_choice = keyin.type_in_menu(view_class = 'Admin')
+        keyin_choice = keyin.type_in_menu(view_class='Admin')
         return keyin_choice
 
     @classmethod
@@ -285,7 +302,7 @@ class SavingView(ViewBase):
         print('4. 해약')
         print('5. 뒤로가기')
 
-        keyin_choice = keyin.type_in_menu(view_class = 'Saving')
+        keyin_choice = keyin.type_in_menu(view_class='Saving')
         return int(keyin_choice)
 
     @classmethod
@@ -317,7 +334,7 @@ class SavingView(ViewBase):
     def __show_saving_history_sub(cls, user, start_date):
 
         end_date = keyin.type_in_date()
-        
+
         if end_date:
             if int(end_date) >= int(start_date):
                 cls.__show_saving_history_result(user, start_date, end_date)
@@ -335,9 +352,8 @@ class SavingView(ViewBase):
         super().describe_current_stage('내역 조회')
         super().request_keyin('시작 날짜')
 
-
         start_date = keyin.type_in_date()
-        
+
         if start_date:
             super().request_keyin('종료 날짜')
             cls.__show_saving_history_sub(user, start_date)
