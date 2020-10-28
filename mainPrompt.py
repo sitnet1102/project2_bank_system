@@ -8,11 +8,13 @@ import newAccount as New_account
 import loginMain
 from Utils.IOUtils import FileReader as fr
 import myUser
+from dataType import PasswordData
+from dataType import BankAccountData
 
 class mainPrompt :  # Bank_main 에서 이름 변경함
     
-    account = ""
-    password = ""
+    __account = ""
+    __password = ""
     
 
     def __init__(self) :
@@ -71,11 +73,18 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
 
     def login(self) :
         bmv.account_input()
-        self.account = input()
-        # trim 해주는것 확인 
+        self.account = input() 
+        self.account = self.account.strip(' ')
+        if BankAccountData.dataConfirm(self.account) :
+            self.account = BankAccountData.dataToBasicType(self.account)
+
         bmv.password_input()
         self.password = input()
+        self.password = self.password.strip(' ')
+        if PasswordData.dataConfirm(self.password) :
+            self.password = PasswordData.dataToBasicType(self.password)
         
+
         loginmain = loginMain.Login_main()
 
         userCheck = self.getData(self.account)
@@ -119,11 +128,37 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
             pass
             #self.main() ## 수정 필요 
         '''
+    def integrity_check(self) :
+        # 무결성 검사 
+        errorCheck = True   # 에러가 있으면 False로 변경
+
+        # 홈 경로에 데이터 파일이 있는지 확인 
+        # 없으면 경고문구 출력, 빈 데이터 파일 생성 
+        # 있으면 다음 단계
+
+
+
+        # 데이터 파일 확인 
+        # accounts.json, history.json, users.json
+        # 예금, 적금 계좌번호 중복확인 
+        # 이름, 비밀번호 중복 확인 
+        
+
+
+        # 오류가 있으면 종료 
+        
+        
+        if errorCheck :
+            pass
+        else :
+            self.programExit()
+            
+
 
     
     def main(self) :
         ## 무결성 검사 
-        #integrity_check()
+        self.integrity_check()
         na = New_account.New_account()
 
         
@@ -138,11 +173,10 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
                 self.programExit()
                 break
         
-    """
-    def integrity_check(self) :
-        # ??????
-        return ??? 
-    """ 
+    
+    
+
+    
 
     @classmethod
     def programExit(cls) :
