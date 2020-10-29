@@ -80,7 +80,7 @@ class FileReader(IOBase):
 class FileWriter(IOBase):
 
     @classmethod
-    def cancel_saving(cls, user_id, account_num):
+    def cancel_saving(cls, user, account_num):
         
         account_file_path = os.path.join(cls.Base_dir, cls.accounts_file)
         user_file_path = os.path.join(cls.Base_dir, cls.user_file)
@@ -90,16 +90,18 @@ class FileWriter(IOBase):
         with open(user_file_path, encoding='utf-8') as f:
             users = json.load(f)
 
-        # 1. accounts에서 기록 삭제
+        # 1. accounts에서 기록 삭제 & 예금으로 이체
+        balance = accounts['Savings'].get(account_num)['balance']
         accounts['Savings'].pop(account_num)
+        accounts['Deposits'].get(user.deposits)['balance'] += balance
 
         with open(account_file_path, mode='w', encoding='utf-8') as f:
-            json.dump(accounts,f)
-
+            json.dump(accounts, f, indent=4, ensure_ascii = False)
+            
         # 2. users에서 적금 삭제
-        users[user_id]['accounts'].remove(account_num)
+        users[user.deposits]['accounts'].remove(account_num)
         with open(user_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(users, f)
+            json.dump(users, f, indent=4,ensure_ascii = False)
 
     @classmethod
     def put_money(cls, account_num, amount):
@@ -111,7 +113,7 @@ class FileWriter(IOBase):
         accounts['Savings'][account_num]['balance'] += amount
 
         with open(account_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(accounts, f)
+            json.dump(accounts, f, indent=4, ensure_ascii = False)
 
     @classmethod
     def make_history(cls, sender, receiver, amount, account_type):
@@ -146,7 +148,7 @@ class FileWriter(IOBase):
             history[sender].append(info)
 
         with open(file_path, mode='w', encoding='utf-8') as f:
-            json.dump(history, f)
+            json.dump(history, f, indent=4, ensure_ascii = False)
 
     @classmethod
 
@@ -196,7 +198,7 @@ class FileWriter(IOBase):
         accounts['Deposits'][account_num]['balance'] += amount
 
         with open(account_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(accounts, f)
+            json.dump(accounts, f, indent = "\t")
             
     @classmethod
     def make_account(cls, account, date, account_type):
