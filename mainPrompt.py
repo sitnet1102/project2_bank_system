@@ -1,4 +1,4 @@
-import deposit
+import myDeposit as deposit
 #import depositTest as deposit
 import mySaving as savings
 #import savingsTest as savings
