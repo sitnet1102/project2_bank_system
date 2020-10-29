@@ -255,7 +255,10 @@ class AdminView(ViewBase):
                 print(f"{saving} / {balance}", end=' / ')
 
             print()
-        print(f"총 {len(users)} 명 입니다.")
+        print(f"총 {len(users)} 명 입니다.\n\n")
+
+        print('아무키나 입력하세요\n')
+        input()
 
     @classmethod
     def show_transaction_datas(cls):
@@ -272,6 +275,9 @@ class AdminView(ViewBase):
                         f"{history['from']} / {history['to']} / {history['date']} / {history['time']} / {history['amount']}")
 
         print(f"총 {len(transactions_without_redundancy)} 건 입니다.")
+
+        print('아무키나 입력하세요.....\n')
+        input()
 
 
 class SavingView(ViewBase):
@@ -304,6 +310,9 @@ class SavingView(ViewBase):
         else:
             print(f'{user.name}님의 적금 계좌가 존재하지 않습니다.')
 
+        print('아무키나 입력하세요....\n')
+        input()
+
     @classmethod
     def __show_saving_history_result(cls, user, start_date, end_date):
         super().Ais('<'+user.name+'님의 내역>\n')
@@ -333,6 +342,7 @@ class SavingView(ViewBase):
                 input()
         else:
             print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
+            input()
 
     @classmethod
     def show_saving_history(cls, user):
@@ -347,6 +357,7 @@ class SavingView(ViewBase):
             cls.__show_saving_history_sub(user, start_date)
         else:
             print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
+            input()
 
 
     def __put_money_in_saving_result(user, amount):
