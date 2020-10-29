@@ -1,24 +1,25 @@
 import re
 
-class KeyIn :
+
+class KeyIn:
     # ''' CLI 입력을 받아들입니다 '''
-    
+
     @classmethod
     def remove_puctuation(cls, type_in, config):
 
         if config == 'integer':
-            pattern = '[\D]'# 숫자가 아닌 모든것 제거
+            pattern = '[\D]'  # 숫자가 아닌 모든것 제거
 
-        elif config == 'date' : 
-            pattern = '[./-]' # 허용된 특수문자만 제거
+        elif config == 'date':
+            pattern = '[./-]'  # 허용된 특수문자만 제거
 
         elif config == 'character':
-            pattern == '[^a-zA-Z]' # 문자가 아닌 것 제거
-        
-        elif config == 'general':
-            pattern = '[\W]' # 숫자와 문자만 허용. 나머지 제거
+            pattern == '[^a-zA-Z]'  # 문자가 아닌 것 제거
 
-        sub = re.sub(pattern,'',type_in)
+        elif config == 'general':
+            pattern = '[\W]'  # 숫자와 문자만 허용. 나머지 제거
+
+        sub = re.sub(pattern, '', type_in)
 
         return sub
 
@@ -40,10 +41,10 @@ class KeyIn :
     @classmethod
     def has_only(cls, type_in, config):
         if config == 'integer':
-            pattern = '[\D]'# 숫자가 아닌 모든것
+            pattern = '[\D]'  # 숫자가 아닌 모든것
 
         elif config == 'character':
-            pattern = '[^a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ]' # 알파벳, 한글이 아닌 모든것
+            pattern = '[^a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ]'  # 알파벳, 한글이 아닌 모든것
 
         p = re.compile(pattern)
 
@@ -54,25 +55,25 @@ class KeyIn :
 
     @classmethod
     def is_leap_year(cls, year):
-        if year%4 == 0 and year%100 == 0 and year%400 == 0:
-            return True 
-        if year%4 == 0 and year%100 == 0:
-            return False # 평년
-        if year%4 == 0:
+        if year % 4 == 0 and year % 100 == 0 and year % 400 == 0:
+            return True
+        if year % 4 == 0 and year % 100 == 0:
+            return False  # 평년
+        if year % 4 == 0:
             return True
 
-        return False # 평년
+        return False  # 평년
 
     @classmethod
     def is_date(cls, type_in):
-        thirty = {4,6,9,11}
+        thirty = {4, 6, 9, 11}
 
         # 비정상
         # 허용된 특수문자만 제거했으므로, 모두 숫자가 아니면
         p = re.compile('[a-zA-Z]+')
         if p.search(type_in) is not None:
             return False
-        
+
         # 6자리거나 8자리가 아니면
         if len(type_in) != 6 and len(type_in) != 8:
             return False
@@ -92,7 +93,7 @@ class KeyIn :
         if year < 1900:
             # 자리 입력시 연도 제한
             return False
-        
+
         # 월에 맞는 일인지
         if month in thirty:
             # 30일 월인데 31일로 입력한 경우
@@ -100,13 +101,13 @@ class KeyIn :
                 return False
 
         # 윤년 체크
-        if month == 2 :
+        if month == 2:
             # 2월
             if cls.is_leap_year(year):
                 # 윤년인데 28일로 입력한 경우
                 if day == 28:
                     return False
-            else :
+            else:
                 # 윤년 아닌데 29일로 입력한 경우
                 if day == 29:
                     return False
@@ -118,20 +119,19 @@ class KeyIn :
     def is_amount(cls, type_in):
 
         # 비정상
-        if not cls.has_only(type_in, config = 'integer'):
+        if not cls.has_only(type_in, config='integer'):
             # 숫자가 아닌게 들어있으면 : 음수 까지 제외가능
             return False
         if type_in[0] == '0':
-            # 0이거나 0으로 시작하면 
+            # 0이거나 0으로 시작하면
             return False
 
         # 정상
         return True
 
-
     @classmethod
     def is_yn(cls, type_in):
-        yn_set = {'y','yes','n','no'}
+        yn_set = {'y', 'yes', 'n', 'no'}
 
         if not cls.has_only(type_in, config='character'):
             # 문자 이외의 것을 갖는다면
@@ -144,15 +144,16 @@ class KeyIn :
 
     @classmethod
     def is_menu(cls, typein, view_class):
-        
 
         # set menu_set
         if view_class == 'Admin':
-            menu_set = set(range(1,4))
+            menu_set = set(range(1, 4))
 
         elif view_class == 'Saving':
-            menu_set = set(range(1,6))
-            
+            menu_set = set(range(1, 6))
+
+        elif view_class == 'deposit':
+            menu_set = set(range(1, 7))
 
         # check typein is in menu_set
         if not cls.has_only(typein, config='integer'):
@@ -161,16 +162,15 @@ class KeyIn :
 
         if len(typein) == 0:
             return False
-            
+
         if int(typein) not in menu_set:
             # 허용된 숫자 범위를 벗어나면
             return False
 
         return True
-                
 
     @classmethod
-    def type_in_menu(cls, view_class = 'Admin'):
+    def type_in_menu(cls, view_class='Admin'):
 
         while True:
             typein = input()
@@ -179,7 +179,6 @@ class KeyIn :
                 return int(typein)
             else:
                 print('메뉴 입력 범위를 벗어났습니다. 다시 입력하세요.')
-
 
     @classmethod
     def type_in_yes_or_no(cls):
@@ -206,7 +205,7 @@ class KeyIn :
     def type_in_date(cls):
 
         keyin = input()
-        stripped_string = cls.remove_puctuation(keyin,config='date')
+        stripped_string = cls.remove_puctuation(keyin, config='date')
 
         if cls.is_date(stripped_string):
             # 허용된 키보드 입력만 8자리로 출력한다.
