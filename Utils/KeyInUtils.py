@@ -152,6 +152,9 @@ class KeyIn :
 
         elif view_class == 'Saving':
             menu_set = set(range(1,6))
+
+        elif view_class == 'Deposit':
+            menu_set = set(range(1,7))
             
 
         # check typein is in menu_set

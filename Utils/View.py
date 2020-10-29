@@ -2,6 +2,8 @@ import mainPrompt as mp
 from Utils.KeyInUtils import KeyIn as keyin
 from Utils.IOUtils import FileReader as reader
 from Utils.IOUtils import FileWriter as writer
+from dataType import BankAccountData as bd
+from dataType import PriceData as prd
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
@@ -30,15 +32,18 @@ class DepositView(ViewBase):
     '''예금 화면요소를 정의합니다. 공통 요소를 수정하고 싶을 땐 method override를 사용합니다'''
     @classmethod
     def menu(cls):
-        print('1. 예금 조회')
-        print('2. 내역 조회')
-        print('3. 입금')
-        print('4. 출금')
-        print('5. 계좌이체')
-        print('6. 뒤로가기')
+        print('''
+                < 적금 >
+                1. 예금 조회
+                2. 내역 조회
+                3. 입금
+                4. 출금
+                5. 계좌 이체
+                6. 뒤로가기
+                ''')
 
         # TODO 메뉴 선택결과 받기
-        keyin_choice = int(input())
+        keyin_choice = keyin.type_in_menu(view_class='Deposit')
         return keyin_choice
 
     @classmethod
@@ -48,32 +53,45 @@ class DepositView(ViewBase):
         accounts = reader.read_all_accounts_in_deposit()
         # for user_deposit in user.deposits:
         balance = accounts[user.deposits]['balance']
-        print(f'잔액은 {balance}원 입니다.')
+        print(f'잔액은 {balance}원 입니다.\n\n')
+        print('아무키나 입력하세요')
+        input()
+        
 
     @classmethod
     def __show_deposit_history_result(cls, user, start_date, end_date):
         super().Ais(user.name+'님의 내역')
-
+        #10개씩 출력 --> 아무키나 입력시 다음 10개로
         transactions = reader.read_all_transactions()
         if user.deposits in transactions.keys():
+            cnt = -1
             for history in transactions[user.deposits]:
-                if int(history['date']) > int(start_date) and int(history['date']) < int(end_date):
+                cnt = cnt + 1
+                if int(history['date']) >= int(start_date) and int(history['date']) <= int(end_date):
                     print(
                         f"{history['from']} / {history['to']} / {history['date']} / {history['time']} / {history['amount']}")
+                    if cnt == 10:
+                        cnt = 0
+                        input()
+                        continue
+                    else:
+                        pass
             super().Ais('마지막 페이지')
         else:
             print('내역이 없습니다.')
 
     @classmethod
     def __show_deposit_history_sub(cls, user, start_date):
-        # TODO 올바른 날짜 keyin utils
-        end_date = '20201231'
-
-        if True:
-            cls.__show_deposit_history_result(user, start_date, end_date)
+        end_date = keyin.type_in_date()
+        
+        if end_date:
+            if int(end_date) >= int(start_date):
+                cls.__show_deposit_history_result(user, start_date, end_date)
+            else:
+                print('시작 시점이 종료 시점보다 늦습니다. 아무키나 입력하세요.....\n\n')
+                input()
         else:
-            print('''올바르지 않은 날짜 입력입니다.
-            아무키나 입력하세요.''')
+            print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
             input()
 
     @classmethod
@@ -81,16 +99,15 @@ class DepositView(ViewBase):
         super().describe_current_stage('내역 조회')
         super().request_keyin('시작 날짜')
 
-        # TODO 올바른 날짜 kyein utils
-        start_date = '20000101'
+        start_date = keyin.type_in_date()
 
-        if True:
+        if start_date:
             super().request_keyin('종료 날짜')
             cls.__show_deposit_history_sub(user, start_date)
         else:
-            print('''올바르지 않은 날짜 입력입니다.
-            아무키나 입력하세요.''')
+            print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
             input()
+
 
     def __put_money_in_deposit_result(user, amount):
         print(f'{amount} 이 입금되었습니다.')
@@ -102,28 +119,38 @@ class DepositView(ViewBase):
         print(f"잔액은 {balance}원 입니다.")
 
         # 거래 내역 저장
-        writer.make_history(user.deposits, user.deposits, amount, "Deposits")
+        writer.make_history('00000000000000', user.deposits, amount, "Deposits_put")
 
     @classmethod
     def __put_money_in_deposit_sub(cls, user):
-        # TODO 올바른 금액 입력 keyin utils
-        money_amount = 1000
+        money_amount = input()
         if money_amount:
-            cls.__put_money_in_deposit_result(user, money_amount)
+            if prd.dataConfirm(money_amount):
+                money_amount = int(prd.dataToBasicType(money_amount))
+                cls.__put_money_in_deposit_result(user, money_amount)
+            else:
+                print('잘못된 형식입니다\n아무키나 입력하세요')
+                input()
+                return
         else:
-            print('''금액이 올바르지 않습니다.
-            아무키나 입력하세요.''')
+            print('잘못된 형식입니다. 아무키나 입력하세요.')
             input()
+            return
 
     @classmethod
     def put_money_in_deposit(cls, user):
         super().confirm_check('입금')
 
         # TODO keyin_result = keyin.yes_or_no()
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or keyin_result == 'yes':
             super().request_keyin('금액')
             cls.__put_money_in_deposit_sub(user)
+
+        elif keyin_result == 'n' or keyin_result == 'no':
+            print('취소하셨습니다\n아무키나 입력하세요')
+            input()
+
         else:
             print('아무키나 입력하세요')
             input()
@@ -138,15 +165,27 @@ class DepositView(ViewBase):
         print(f"잔액은 {balance}원 입니다.")
 
         # 거래 내역 저장
-        writer.make_history(user.deposits, user.deposits, amount, "Deposits")
+        writer.make_history(user.deposits, '00000000000000', amount, "Deposits_withdraw")
 
     @classmethod
     def __withdraw_money_in_deposit_sub(cls, user):
         # TODO 올바른 금액 입력 keyin utils
 
-        money_amount = 10000
+        money_amount = input()
+        if money_amount:
+            if prd.dataConfirm(money_amount):
+                money_amount = int(prd.dataToBasicType(money_amount))
+            else:
+                print('잘못된 형식입니다\n아무키나 입력하세요')
+                input()
+                return
+        else:
+            print('잘못된 형식입니다\n  아무키나 입력하세요')
+            input()
+            return
         accounts = reader.read_all_accounts_in_deposit()
         balance = accounts[user.deposits]['balance']
+
         if money_amount < balance:
             cls.__withdraw_money_in_deposit_result(user, money_amount)
         else:
@@ -157,45 +196,77 @@ class DepositView(ViewBase):
     def withdraw_money_in_deposit(cls, user):
         super().confirm_check('출금')
 
-        # TODO 말해YES OR NO
-        keyin_result = 'y'
-        if keyin_result == 'y':
+        keyin_result = keyin.type_in_yes_or_no()
+        if keyin_result == 'y' or keyin_result == 'yes':
             super().request_keyin('금액')
             cls.__withdraw_money_in_deposit_sub(user)
+
+        elif keyin_result == 'n' or keyin_result == 'no':
+            print('취소하셨습니다\n아무키나 입력하세요')
+            input()
+
         else:
             print('아무키나 입력하세요')
             input()
 
-    # 이체부분 transaction safety 차치하더라도 로직 손봐야함 불명확
-    @classmethod
-    def __send_money_result(user, amount):
+
+    
+    def send_money_result(user, amount):
         print(f'{amount}원 이 이체되었습니다.')
 
-        # 예금 계좌 갱신
-        writer.withdraw_money(user.deposits, amount)
+        # 완료 메세지를 위해 예금 계좌 잔액 다시 로드
         accounts = reader.read_all_accounts_in_deposit()
         balance = accounts[user.deposits]['balance']
         print(f'잔액은 {balance}원 입니다.')
 
-        # 거래내역 저장부분
+        
 
     @classmethod
     def __send_money_sub1(cls, user):
         # TODO 금액입력형식 / 계좌번호 입력형식
 
-        money_amount = 100
+        money_amount = input()
+        if money_amount:
+            if prd.dataConfirm(money_amount):
+                money_amount = int(prd.dataToBasicType(money_amount))
+            else:
+                print('잘못된 형식입니다\n아무키나 입력하세요')
+                input()
+                return
+        else:
+            print('잘못된 형식입니다\n  아무키나 입력하세요')
+            input()
+            return
         accounts_sender = reader.read_all_accounts_in_deposit()
         balance = accounts_sender[user.deposits]['balance']
-        # TODO 계좌번호로 유저찾아서 입금하기
-        another_account = '34563451234567'
-        temp_receiver = reader.read_one_users(another_account)
-        #user_receiver = mp.getData(another_account)
+
+        super().request_keyin('계좌번호')
+        account_receiver = input()
+        confirm = bd.dataConfirm(account_receiver)
+        if confirm:
+            account_receiver = bd.dataToBasicType(account_receiver)
+            print(f'\n입금액 : {money_amount} 원')
+            print(f'계좌번호 : {account_receiver}')
+            super().confirm_check('이체')
+            keyin_result = keyin.type_in_yes_or_no()
+            if keyin_result == 'y' or keyin_result == 'yes':
+                pass
+            else:
+                print('취소하였습니다')
+                input()
+                return
+        else:
+            print('잘못된 계좌번호입니다.  아무키나 입력하세요')
+            input()
+            return
+
+        user_receiver = reader.read_one_users(account_receiver)
 
         if money_amount < balance:
             writer.withdraw_money(user.deposits, money_amount)
-            writer.put_money_in_deposit(
-                temp_receiver['accounts'][0], money_amount)
-            cls.__send_money_result(user, money_amount)
+            writer.put_money_in_deposit(user_receiver['accounts'][0], money_amount)
+            writer.make_history(user.deposits, user_receiver['accounts'][0], money_amount, 'Deposits_send')
+            cls.send_money_result(user, money_amount)
         else:
             print('''잔액이 부족합니다 아무키나 입력하세요''')
             input()

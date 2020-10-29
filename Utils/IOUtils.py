@@ -140,11 +140,29 @@ class FileWriter(IOBase):
             if sender not in history.keys():
                 history[sender] = []
             history[sender].append(info)
-        # 다른 타입의 계좌인 경우 이곳에 정의
-        # 예금
-        elif account_type == 'Deposits':
+        # 예금계좌의 종류에따라 다른 history가 기록됨
+        elif account_type == 'Deposits_withdraw':
             if sender not in history.keys():
                 history[sender] = []
+            history[sender].append(info)
+        elif account_type == 'Deposits_put':
+            if receiver not in history.keys():
+                history[receiver] = []
+            history[receiver].append(info)
+        # 계좌이체는 sender, receiver 모두 history에 기록해두어야함
+        elif account_type == 'Deposits_send':
+            if sender not in history.keys():
+
+                if receiver not in history.keys():
+                    history[sender] = []
+                    history[receiver] = []
+                else:
+
+                    history[sender] = []
+            else:
+                if receiver not in history.keys():
+                    history[receiver] = []
+            history[receiver].append(info)
             history[sender].append(info)
 
         with open(file_path, mode='w', encoding='utf-8') as f:
@@ -186,7 +204,7 @@ class FileWriter(IOBase):
         accounts['Deposits'][account_num]['balance'] -= amount
 
         with open(account_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(accounts, f)
+            json.dump(accounts, f, indent=4, ensure_ascii = False)
 
     @classmethod
     def put_money_in_deposit(cls, account_num, amount):
@@ -198,7 +216,7 @@ class FileWriter(IOBase):
         accounts['Deposits'][account_num]['balance'] += amount
 
         with open(account_file_path, mode='w',encoding='utf-8') as f:
-            json.dump(accounts, f, indent = "\t")
+            json.dump(accounts, f, indent=4, ensure_ascii = False)
             
     @classmethod
     def make_account(cls, account, date, account_type):
