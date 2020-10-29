@@ -62,10 +62,12 @@ class New_account :
         self.today() # 데이터 형식에 대한 클래스를 따로 정할지 고민중
         nav.info_confirm(self.name, self.date, self.password)
         check = input()
-        if check == "Y" :
+        
+        if check == "Y" or check == "y" or check == "yes" or check == "YES" or check == "Yes":
             self.join()
-        elif check == "N" :
+        else :
             self.cancel()
+
 
     def today(self) :   # 데이터 형식에 대한 클래스를 따로 정할지 고민중
         self.date = time.strftime('%Y%m%d', time.localtime(time.time()))
@@ -74,8 +76,8 @@ class New_account :
         self.account = self.give_account()
         num1 = int(self.account[:1]) + 5
         savingsA = str(num1) + self.account[1:]
-        print(self.account)
-        print(savingsA)
+        #print(self.account)
+        #print(savingsA)
         nav.join(self.name, self.account)
         self.save_info(self.account, self.name, self.password, self.date, savingsA)
         self.press_anykey()
@@ -112,13 +114,9 @@ class New_account :
     
     def save_info(self, account, name, pw, date, savingsA) :
         ## 데이터 json 파일에 저장 
-        ## 컨트롤로 연결??? 
-        #######################################################################
-        # 계좌에 저장으로 연결 ???
-        #######################################################################
         fw.make_user(account, name, pw, date, savingsA)
-        #fw.make_account(account, date, "Deposits")
-        #fw.make_account(savingsA, date, "Savings")
+        fw.make_account(account, date, "Deposits")
+        fw.make_account(savingsA, date, "Savings")
 
     def run(self) :
         self.entry_confirm()

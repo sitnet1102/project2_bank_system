@@ -20,8 +20,8 @@ class dataTypeBase :
 
     @classmethod
     def dataCompare(cls, A, B) :
-        A = self.dataToBasicType(A)
-        B = self.dataToBasicType(B)
+        A = cls.dataToBasicType(A)
+        B = cls.dataToBasicType(B)
         
         if A == B :
             return True

@@ -155,13 +155,46 @@ class FileWriter(IOBase):
         }
 
         if account not in user.keys():
-            user[account] = []
-        user[account].append(userInfo)
+            #user[account] = None
+            #user.setdfault(account)
+            user[account] = userInfo
+        #user[account].append(userInfo)
+        #user[account].update(userInfo)
+        ### 수정 필요
 
         with open(file_path, mode='w', encoding="utf-8") as f:
             json.dump(user, f, ensure_ascii = False, indent = "\t")
+<<<<<<< Updated upstream
     
     '''
+=======
+
+    @classmethod
+    def withdraw_money(cls, account_num, amount):
+        account_file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(account_file_path, encoding='utf-8') as f:
+            accounts = json.load(f)
+
+        accounts['Deposits'][account_num]['balance'] -= amount
+
+        with open(account_file_path, mode='w',encoding='utf-8') as f:
+            json.dump(accounts, f, indent = "\t")
+
+    @classmethod
+    def put_money_in_deposit(cls, account_num, amount):
+        account_file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(account_file_path, encoding='utf-8') as f:
+            accounts = json.load(f)
+
+        accounts['Deposits'][account_num]['balance'] += amount
+
+        with open(account_file_path, mode='w',encoding='utf-8') as f:
+            json.dump(accounts, f, indent = "\t")
+
+            
+>>>>>>> Stashed changes
     @classmethod
     def make_account(cls, account, date, account_type):
         file_path = os.path.join(cls.Base_dir, cls.accounts_file)
@@ -170,7 +203,7 @@ class FileWriter(IOBase):
             acc = json.load(f)
 
         balance = 0
-        ex_date = int(date) + 30000 # 3년 추가 
+        ex_date = str(int(date) + 30000) # 3년 추가 
         #accountInfo = ""
         # 계좌 정보 
         if account_type == "Deposits" :
@@ -186,13 +219,57 @@ class FileWriter(IOBase):
             }
         else : 
             return False
-
+        
+        '''
         if account_type not in acc.keys() :
             acc[account_type] = []
-        if acc not in acc[account_type].keys():
-            acc[account_type][account] = []
-        acc[account_type][account].append(accountInfo)
+        '''
+        if account not in acc[account_type].keys():
+            acc[account_type][account] = accountInfo
+        
+        #acc[account_type][account].append(accountInfo)
 
         with open(file_path, mode='w', encoding="utf-8") as f:
+<<<<<<< Updated upstream
             json.dump(user, f, ensure_ascii = False, indent = "\t")
     '''
+=======
+            json.dump(acc, f, ensure_ascii = False, indent = "\t")
+    
+class FileMaker(IOBase):
+    # 파일이 없으면 만드는 클래스
+    @classmethod
+    def make_users(cls) :
+        # 파일 경로
+        file = cls.Base_dir + "\\"+ cls.user_file
+
+        check = os.path.isfile(file)
+        
+        if check :
+            pass
+        else :
+            f = open(file, 'w')
+
+    @classmethod
+    def make_history(cls) :
+        # 파일 경로
+        file = cls.Base_dir + "\\"+ cls.history_file
+
+        check = os.path.isfile(file)
+        
+        if check :
+            pass
+        else :
+            f = open(file, 'w')
+
+    @classmethod
+    def make_accounts(cls) :
+        file = cls.Base_dir + "\\"+ cls.accounts_file
+
+        check = os.path.isfile(file)
+        
+        if check :
+            pass
+        else :
+            f = open(file, 'w')
+>>>>>>> Stashed changes

@@ -7,6 +7,7 @@ import myAdmin # as admin
 import newAccount as New_account
 import loginMain
 from Utils.IOUtils import FileReader as fr
+from Utils.IOUtils import FileMaker as fm
 import myUser
 from dataType import PasswordData
 from dataType import BankAccountData
@@ -129,20 +130,49 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
             #self.main() ## 수정 필요 
         '''
     def integrity_check(self) :
+        
         # 무결성 검사 
         errorCheck = True   # 에러가 있으면 False로 변경
 
         # 홈 경로에 데이터 파일이 있는지 확인 
         # 없으면 경고문구 출력, 빈 데이터 파일 생성 
         # 있으면 다음 단계
-
+        fm.make_users()
+        fm.make_history()
+        fm.make_accounts()
 
 
         # 데이터 파일 확인 
         # accounts.json, history.json, users.json
         # 예금, 적금 계좌번호 중복확인 
         # 이름, 비밀번호 중복 확인 
-        
+        # 문법 규칙 확인 
+        ################## keys가 자동으로 중복을 처리해버리는 문제 
+        ## json 자체에서 중복이 오류 처리됨
+        users_data = fr.read_all_users()
+        if len(set(users_data.keys())) == len(users_data.keys()) :
+            pass
+        else :
+            errorCheck = False
+    
+        history_data = fr.read_all_transactions()
+        if len(set(history_data.keys())) == len(history_data.keys()) :
+            pass
+        else :
+            errorCheck = False
+            
+        savings_data = fr.read_all_accounts()
+        if len(set(savings_data.keys())) == len(savings_data.keys()) :
+            pass
+        else :
+            errorCheck = False
+
+        deposits_data = fr.read_all_accounts_in_deposit()
+        if len(set(deposits_data.keys())) == len(deposits_data.keys()) :
+            pass
+        else :
+            errorCheck = False
+
 
 
         # 오류가 있으면 종료 
@@ -152,7 +182,6 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
             pass
         else :
             self.programExit()
-            
 
 
     

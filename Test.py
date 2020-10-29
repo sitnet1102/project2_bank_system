@@ -7,6 +7,9 @@ from dataType import DateData
 from dataType import PasswordData
 from dataType import BankAccountData
 from random import random
+from Utils.IOUtils import IOBase as b
+from Utils.IOUtils import FileMaker as fm
+from Utils.IOUtils import FileReader as fr
 '''
 A = input()
 B = input()
@@ -76,7 +79,7 @@ print(BankAccountData.dataToBasicType(A))
 '''
 
 
-
+'''
 result = ""
 for i in range(14) :
     num = random()
@@ -93,3 +96,27 @@ num = random()
 num = int(num * 10)
 num = num % 5
 print(num)
+
+'''
+'''
+print(b.Base_dir)
+print(b.user_file)
+file = b.Base_dir + "\\" + b.user_file
+print(file)
+
+# fm.make_users()
+
+'''
+
+users_data = fr.read_all_users()
+#for i in range() : 
+
+
+history_data = fr.read_all_transactions()
+
+savings_data = fr.read_all_accounts()
+
+deposits_data = fr.read_all_accounts_in_deposit()
+
+print(users_data.keys())
+print(len(users_data.keys()))
