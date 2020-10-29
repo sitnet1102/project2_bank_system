@@ -154,7 +154,6 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
             pass
         else :
             errorCheck = False
-    
         history_data = fr.read_all_transactions()
         if len(set(history_data.keys())) == len(history_data.keys()) :
             pass
