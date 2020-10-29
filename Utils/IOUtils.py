@@ -164,7 +164,6 @@ class FileWriter(IOBase):
 
         with open(file_path, mode='w', encoding="utf-8") as f:
             json.dump(user, f, ensure_ascii = False, indent = "\t")
-<<<<<<< Updated upstream
 
     
 
