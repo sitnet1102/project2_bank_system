@@ -255,7 +255,8 @@ class FileMaker(IOBase):
         if check :
             pass
         else :
-
+            f = open(file, 'w')
+            
     @classmethod
     def make_accounts(cls) :
         file = cls.Base_dir + "\\"+ cls.accounts_file
