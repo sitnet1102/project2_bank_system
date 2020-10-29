@@ -30,7 +30,15 @@ class FileReader(IOBase):
             accounts = json.load(f) # accounts.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
 
         return accounts[account_type]
-            
+
+    @classmethod
+    def read_all_accounts_in_deposit(cls, account_type = 'Deposits'):
+        file_path = os.path.join(cls.Base_dir, cls.accounts_file)
+
+        with open(file_path, encoding='utf-8') as f:
+            accounts = json.load(f) # accounts.json 파일의 내용을 dictionary 형식으로 읽어옵니다.
+
+        return accounts[account_type]        
 
     @classmethod
     def read_all_transactions(cls):
