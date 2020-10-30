@@ -245,7 +245,7 @@ class FileWriter(IOBase):
 
         #if account_type not in acc.keys() :
         #    acc[account_type] = []
-        if acc not in acc[account_type].keys():
+        if account not in acc[account_type].keys():
             acc[account_type][account] = accountInfo
         #acc[account_type][account].append(accountInfo)
 
@@ -261,10 +261,11 @@ class FileMaker(IOBase):
         check = os.path.isfile(file)
 
         if check :
-            pass
+            return True
         else :
             f = open(file, 'w')
-
+            return False
+            
     @classmethod
     def make_history(cls) :
         # 파일 경로
@@ -273,9 +274,10 @@ class FileMaker(IOBase):
         check = os.path.isfile(file)
 
         if check :
-            pass
+            return True
         else :
             f = open(file, 'w')
+            return False
             
     @classmethod
     def make_accounts(cls) :
@@ -284,6 +286,7 @@ class FileMaker(IOBase):
         check = os.path.isfile(file)
 
         if check :
-            pass
+            return True
         else :
             f = open(file, 'w')
+            return False

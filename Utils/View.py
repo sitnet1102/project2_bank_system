@@ -577,6 +577,14 @@ class BankMainView(ViewBase):
             2. 신규가입\n
             3. 종료\n
         ''')
+    
+    @classmethod
+    def error_output(cls) :
+        print("오류입니다.\n")
+    
+    @classmethod
+    def file_error_output(cls) :
+        print("파일 오류입니다.\n")
 
     @classmethod
     def exit(cls):

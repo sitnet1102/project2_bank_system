@@ -28,15 +28,15 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
         if userData == False:
             return result
         else:
-            id = account
-            if id == "00000000000000":
+            id = int(account[:4])
+            if 0 <= id < 1000:
                 # 관리자
                 admin = 0
                 name = userData['name']
                 pw = userData['pw']
                 date = userData['sign_up_date']
                 result = {
-                    'id': id,
+                    'id': account,
                     'name': name,
                     'sign_up_date': date,
                     'user_class': admin,
@@ -44,7 +44,7 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
                     'Savings': 0
                 }
                 return result
-            else:
+            elif 1000 <= id < 5000:
                 # 일반 사용자
                 admin = 1
                 name = userData['name']
@@ -53,7 +53,7 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
                 depositAccount = userData['accounts'][0]
                 savingsAccount = userData['accounts'][1]
                 result = {
-                    'id': id,
+                    'id': account,
                     'name': name,
                     'sign_up_date': date,
 
@@ -139,10 +139,14 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
         # 홈 경로에 데이터 파일이 있는지 확인 
         # 없으면 경고문구 출력, 빈 데이터 파일 생성 
         # 있으면 다음 단계
-        fm.make_users()
-        fm.make_history()
-        fm.make_accounts()
+        user_file_check = fm.make_users()
+        history_file_check = fm.make_history()
+        account_file_check = fm.make_accounts()
 
+        if user_file_check and history_file_check and account_file_check :
+            pass
+        else :
+            bmv.file_error_output()
 
         # 데이터 파일 확인 
         # accounts.json, history.json, users.json
@@ -151,58 +155,62 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
         # 문법 규칙 확인 
         ################## keys가 자동으로 중복을 처리해버리는 문제 
         ## json 자체에서 중복이 오류 처리됨
-        users_data = fr.read_all_users()
-        if len(set(users_data.keys())) == len(users_data.keys()) :
-            pass
-        else :
-            errorCheck = False
-        history_data = fr.read_all_transactions()
-        if len(set(history_data.keys())) == len(history_data.keys()) :
-            pass
-        else :
-            errorCheck = False
-            
-        savings_data = fr.read_all_accounts()
-        if len(set(savings_data.keys())) == len(savings_data.keys()) :
-            pass
-        else :
-            errorCheck = False
+        try :
+            users_data = fr.read_all_users()
+            if len(set(users_data.keys())) == len(users_data.keys()) :
+                pass
+            else :
+                errorCheck = False
+            history_data = fr.read_all_transactions()
+            if len(set(history_data.keys())) == len(history_data.keys()) :
+                pass
+            else :
+                errorCheck = False
+                
+            savings_data = fr.read_all_accounts()
+            if len(set(savings_data.keys())) == len(savings_data.keys()) :
+                pass
+            else :
+                errorCheck = False
 
-        deposits_data = fr.read_all_accounts_in_deposit()
-        if len(set(deposits_data.keys())) == len(deposits_data.keys()) :
-            pass
-        else :
-            errorCheck = False
+            deposits_data = fr.read_all_accounts_in_deposit()
+            if len(set(deposits_data.keys())) == len(deposits_data.keys()) :
+                pass
+            else :
+                errorCheck = False
+        except :
+            bmv.error_output()
+            errorCheck = False 
 
 
 
         # 오류가 있으면 종료 
         
         
-        if errorCheck :
-            pass
-        else :
-            self.programExit()
+        return errorCheck
             
 
 
     
     def main(self) :
         ## 무결성 검사 
-        self.integrity_check()
+        check = self.integrity_check()
 
-        na = New_account.New_account()
+        if check :
+            na = New_account.New_account()
 
-        while True:
-            bmv.bank_main()
-            choice = input()
-            if choice == '1':
-                self.login()
-            elif choice == '2':
-                na.run()
-            elif choice == '3':
-                self.programExit()
-                break
+            while True:
+                bmv.bank_main()
+                choice = input()
+                if choice == '1':
+                    self.login()
+                elif choice == '2':
+                    na.run()
+                elif choice == '3':
+                    self.programExit()
+                    break
+        else : 
+            self.programExit()
 
     @classmethod
     def programExit(cls):

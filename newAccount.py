@@ -74,8 +74,8 @@ class New_account :
         self.account = self.give_account()
         num1 = int(self.account[:1]) + 5
         savingsA = str(num1) + self.account[1:]
-        print(self.account)
-        print(savingsA)
+        #print(self.account)
+        #print(savingsA)
         nav.join(self.name, self.account)
         self.save_info(self.account, self.name, self.password, self.date, savingsA)
         self.press_anykey()

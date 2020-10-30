@@ -76,7 +76,7 @@ print(BankAccountData.dataToBasicType(A))
 '''
 
 
-
+'''
 result = ""
 for i in range(14) :
     num = random()
@@ -93,3 +93,9 @@ num = random()
 num = int(num * 10)
 num = num % 5
 print(num)
+'''
+
+account = "00000000000000"
+id = int(account[:4])
+print(id)
+print(account[:4])
