@@ -51,7 +51,10 @@ class mainPrompt :  # Bank_main 에서 이름 변경함
                 pw = userData['pw']
                 date = userData['sign_up_date']
                 depositAccount = userData['accounts'][0]
-                savingsAccount = userData['accounts'][1]
+                try :
+                    savingsAccount = userData['accounts'][1]
+                except IndexError:
+                    savingsAccount = ""
                 result = {
                     'id': account,
                     'name': name,

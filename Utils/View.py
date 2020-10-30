@@ -565,6 +565,10 @@ class LoginMainView(ViewBase):
     @classmethod
     def press_anykey(cls):
         print("아무키나 누르세요\n")
+        
+    @classmethod
+    def savings_error(cls):
+        print("적금이 없습니다.\n")
 
 
 class BankMainView(ViewBase):

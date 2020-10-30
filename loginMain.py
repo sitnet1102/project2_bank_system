@@ -18,13 +18,14 @@ class Login_main :
             choice = input()
             if choice == '1' :
                 d.run()
-                pass
             elif choice == '2' :
-                s.run()
+                if user.savings == "" :
+                    lmv.savings_error()
+                    self.press_anykey()
+                else :
+                    s.run()
             elif choice == '3' :
                 ## json에서 이름, 가입일, 적금 계좌번호 가져오기 
-                #self.date = "20200101" #### 수정필요 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                #self.savings_account = "56785675678901" ### 수정필요 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 ## 적금이 없을 때의 예외처리 필요 
                 lmv.my_info(user.name, user.date, user.deposits, user.savings)
                 self.press_anykey()
