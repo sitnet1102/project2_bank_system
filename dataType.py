@@ -20,8 +20,8 @@ class dataTypeBase :
 
     @classmethod
     def dataCompare(cls, A, B) :
-        A = self.dataToBasicType(A)
-        B = self.dataToBasicType(B)
+        A = cls.dataToBasicType(A)
+        B = cls.dataToBasicType(B)
         
         if A == B :
             return True
@@ -208,17 +208,20 @@ class PasswordData(dataTypeBase) :
         sEng = 0
         bEng = 0
         sChar = 0
+        otherChar = 0
         if len(data) < 10 or len(data) > 20 :
             return False
         for i in range(len(data)) :
             if ord('0') <= ord(data[i]) <= ord('9') :
                 num = num + 1
-            if ord('a') <= ord(data[i]) <= ord('z') :
+            elif ord('a') <= ord(data[i]) <= ord('z') :
                 sEng = sEng + 1
-            if ord('A') <= ord(data[i]) <= ord('Z') :
+            elif ord('A') <= ord(data[i]) <= ord('Z') :
                 bEng = bEng + 1
-            if ord(data[i]) == ord('!') or ord(data[i]) == ord('@') or ord(data[i]) == ord('#') or ord(data[i]) == ord('$') or ord(data[i]) == ord('%') or ord(data[i]) == ord('^') or ord(data[i]) == ord('&') or ord(data[i]) == ord('*') or ord(data[i]) == ord('(') or ord(data[i]) == ord(')') :
+            elif ord(data[i]) == ord('!') or ord(data[i]) == ord('@') or ord(data[i]) == ord('#') or ord(data[i]) == ord('$') or ord(data[i]) == ord('%') or ord(data[i]) == ord('^') or ord(data[i]) == ord('&') or ord(data[i]) == ord('*') or ord(data[i]) == ord('(') or ord(data[i]) == ord(')') :
                 sChar = sChar + 1
+            else : 
+                otherChar = otherChar + 1
         '''
         print(num)
         print(sEng)
@@ -226,6 +229,11 @@ class PasswordData(dataTypeBase) :
         print(sChar)
         '''
         if num == 0 or sEng == 0 or bEng == 0 or sChar == 0 :
+            check = False
+
+        if otherChar == 0 :
+            pass
+        else : 
             check = False
         return check
 

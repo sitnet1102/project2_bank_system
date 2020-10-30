@@ -64,7 +64,7 @@ class New_account :
         check = input()
         if check == "Y" :
             self.join()
-        elif check == "N" :
+        else :
             self.cancel()
 
     def today(self) :   # 데이터 형식에 대한 클래스를 따로 정할지 고민중
@@ -117,8 +117,8 @@ class New_account :
         # 계좌에 저장으로 연결 ???
         #######################################################################
         fw.make_user(account, name, pw, date, savingsA)
-        #fw.make_account(account, date, "Deposits")
-        #fw.make_account(savingsA, date, "Savings")
+        fw.make_account(account, date, "Deposits")
+        fw.make_account(savingsA, date, "Savings")
 
     def run(self) :
         self.entry_confirm()

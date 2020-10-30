@@ -33,7 +33,7 @@ class DepositView(ViewBase):
     @classmethod
     def menu(cls):
         print('''
-                < 적금 >
+                < 예금 >
                 1. 예금 조회
                 2. 내역 조회
                 3. 입금

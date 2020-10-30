@@ -188,8 +188,8 @@ class FileWriter(IOBase):
         }
 
         if account not in user.keys():
-            user[account] = []
-        user[account].append(userInfo)
+            user[account] = userInfo
+        #user[account].append(userInfo)
 
         with open(file_path, mode='w', encoding="utf-8") as f:
             json.dump(user, f, ensure_ascii = False, indent = "\t")
@@ -243,12 +243,47 @@ class FileWriter(IOBase):
         else : 
             return False
 
-        if account_type not in acc.keys() :
-            acc[account_type] = []
+        #if account_type not in acc.keys() :
+        #    acc[account_type] = []
         if acc not in acc[account_type].keys():
-            acc[account_type][account] = []
-        acc[account_type][account].append(accountInfo)
+            acc[account_type][account] = accountInfo
+        #acc[account_type][account].append(accountInfo)
 
         with open(file_path, mode='w', encoding="utf-8") as f:
-            json.dump(user, f, ensure_ascii = False, indent = "\t")
+            json.dump(acc, f, ensure_ascii = False, indent = "\t")
 
+class FileMaker(IOBase):
+    # 파일이 없으면 만드는 클래스
+    @classmethod
+    def make_users(cls) :
+        # 파일 경로
+        file = cls.Base_dir + "\\"+ cls.user_file
+        check = os.path.isfile(file)
+
+        if check :
+            pass
+        else :
+            f = open(file, 'w')
+
+    @classmethod
+    def make_history(cls) :
+        # 파일 경로
+        file = cls.Base_dir + "\\"+ cls.history_file
+
+        check = os.path.isfile(file)
+
+        if check :
+            pass
+        else :
+            f = open(file, 'w')
+            
+    @classmethod
+    def make_accounts(cls) :
+        file = cls.Base_dir + "\\"+ cls.accounts_file
+
+        check = os.path.isfile(file)
+
+        if check :
+            pass
+        else :
+            f = open(file, 'w')
