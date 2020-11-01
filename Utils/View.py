@@ -409,7 +409,7 @@ class SavingView(ViewBase):
             if int(end_date) >= int(start_date):
                 cls.__show_saving_history_result(user, start_date, end_date)
             else:
-                print('시작 시점이 종료 시점보다 늦습니다. 아무키나 입력하세요.....\n\n')
+                print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')
                 input()
         else:
             print('올바르지 않은 날짜 입력입니다. 아무키나 입력하세요......\n\n')

@@ -69,7 +69,7 @@ class KeyIn :
 
         # 비정상
         # 허용된 특수문자만 제거했으므로, 모두 숫자가 아니면
-        p = re.compile('[a-zA-Z]+')
+        p = re.compile('[\D]+')
         if p.search(type_in) is not None:
             return False
         
@@ -121,6 +121,9 @@ class KeyIn :
         if not cls.has_only(type_in, config = 'integer'):
             # 숫자가 아닌게 들어있으면 : 음수 까지 제외가능
             return False
+        if len(type_in) == 0:
+            return False
+            
         if type_in[0] == '0':
             # 0이거나 0으로 시작하면 
             return False
@@ -152,7 +155,6 @@ class KeyIn :
 
         elif view_class == 'Saving':
             menu_set = set(range(1,6))
-
         elif view_class == 'Deposit':
             menu_set = set(range(1,7))
             
